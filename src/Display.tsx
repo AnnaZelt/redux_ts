@@ -1,5 +1,5 @@
 import React from 'react'
-import { IBook } from './features/counter/Book'
+import { IBook } from './features/counter/bookSlice'
 
 const Waga = (book: IBook) => {
   return (

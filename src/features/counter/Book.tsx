@@ -1,29 +1,49 @@
 import React, { useState } from 'react';
-import Waga from '../../Display';
-import { IBook } from './BookSlice';
-import { JSX } from 'react/jsx-runtime';
+import { IBook } from './bookSlice';
+import { useAppDispatch } from '../../app/hooks';
+import { addBook, saveAsync } from './bookSlice';
 
-export function addBook() {
-  const [name, setname] = useState("")
-  const [author, setauthor] = useState("")
-  const [yearPublished, setyearPublished] = useState(0)
-  const [books, setbooks] = useState<IBook[]>([])
+const Book = () => {
+  const [name, setName] = useState('');
+  const [author, setAuthor] = useState('');
+  const [yearPublished, setYearPublished] = useState(0);
+  const [books, setBooks] = useState<IBook[]>([]);
+  const dispatch = useAppDispatch();
 
-  function dispatch(arg0: JSX.Element): void {
-    throw new Error('Function not implemented.');
-  }
+  const handleAddBook = () => {
+    const newBook: IBook = {
+      name: name,
+      author: author,
+      yearPublished: yearPublished,
+    };
+    setBooks([...books, newBook]);
+    dispatch(addBook(newBook));
+    dispatch(saveAsync(books));
+    // Clear input fields after adding book
+    setName('');
+    setAuthor('');
+    setYearPublished(0);
+  };
 
   return (
-      <div>
-      Name: <input type="text" onChange={(e) => setname(e.target.value)}/>
-      Auhtor: <input type="text" onChange={(e) => setauthor(e.target.value)}/>
-      Year Published: <input onChange={(e) => setyearPublished(Number(e.target.value))}/><br/>
-      <button onClick={() => dispatch(addBook(books))}>Add book</button>
-      <hr/>
+    <div>
+      <h1>Add Book</h1>
+      Name: <input type="text" value={name} onChange={(e) => setName(e.target.value)} />
+      Author: <input type="text" value={author} onChange={(e) => setAuthor(e.target.value)} />
+      Year Published: <input type="number" value={yearPublished} onChange={(e) => setYearPublished(Number(e.target.value))} />
+      <br />
+      <button onClick={handleAddBook}>Add book</button>
+      <hr />
       <h1>Books</h1>
-      {books.map((book,ind) => <Waga key={ind} name={book.name} author={book.author} yearPublished={book.yearPublished}/>)}
-       </div>
+      {books.map((book, ind) => (
+        <div key={ind}>
+          <p>Name: {book.name}</p>
+          <p>Author: {book.author}</p>
+          <p>Year Published: {book.yearPublished}</p>
+        </div>
+      ))}
+    </div>
   );
-}
-export { IBook };
+};
 
+export default Book;
